@@ -4,50 +4,86 @@ gestion_medicos.py - Gestiona los medicos del hospital usando ARREGLOS.
 Responsable: est1
 Estructura de datos: list (arreglo dinamico de Python)
 
-PENDIENTE DE IMPLEMENTAR: est1 debe reemplazar los metodos
-con la logica real en las Rondas 1 y 2.
+Cada medico tiene: nombre, especialidad, y un estado (disponible/ocupado).
+Se usa una lista porque la cantidad de medicos es variable pero
+no necesitamos busqueda rapida por clave (no es un arbol).
+
+Ronda 1: registrar, ver disponibles, contar.
+Los metodos asignar_medico, ver_ocupados y liberar quedan como stubs
+y se implementan en la Ronda 2.
 """
 
 
+class Medico:
+    """Representa un medico del hospital.
+
+    En Python pueden convivir varias clases en el mismo archivo; esta se
+    declara junto a GestionMedicos porque solo se usa aqui.
+    """
+
+    def __init__(self, nombre, especialidad):
+        # self.nombre es el atributo del objeto; nombre es el parametro recibido
+        self.nombre = nombre
+        self.especialidad = especialidad
+        # Todo medico nuevo empieza como disponible
+        self.disponible = True
+
+
 class GestionMedicos:
-    # __init__ es el constructor: se ejecuta al hacer 'GestionMedicos()'.
-    # 'self' es el propio objeto; siempre va como primer parametro de los metodos.
     def __init__(self):
-        # En Python una lista crece y se reduce sola: no hay que declarar tamano.
-        # El guion bajo inicial (_medicos) es la forma de avisar "esto es interno,
-        # no se toca desde fuera". Es el equivalente de 'private' en Java.
+        # Lista que almacena todos los objetos Medico del hospital
         self._medicos = []
 
-    # Stub: metodo para registrar un medico. Recibe nombre y especialidad.
-    # En la Ronda 1 se implementara con la logica real usando una clase Medico.
     def registrar(self, nombre, especialidad):
-        print("[Pendiente] Registrar medico: " + nombre)
+        """Registrar un nuevo medico (disponible por defecto)."""
+        # append() agrega el elemento al final de la lista
+        self._medicos.append(Medico(nombre, especialidad))
+        # El signo + une textos
+        print("Medico registrado: " + nombre + " (" + especialidad + ")")
 
-    # Stub: metodo para asignar un medico disponible a un paciente.
-    # Devuelve None porque aun no tiene logica real.
-    # None es el equivalente de null en Java: "sin valor".
     def asignar_medico(self):
-        print("[Pendiente] Asignar medico.")
+        """[Ronda 2] Asignar el primer medico disponible."""
+        # Este metodo es un stub: solo imprime un mensaje y devuelve None
+        print("[Pendiente Ronda 2] Asignar medico.")
         return None
 
-    # Stub: mostrar los medicos disponibles.
-    # En la Ronda 1 se implementara recorriendo la lista y filtrando por disponible = True.
     def ver_disponibles(self):
-        print("[Pendiente] Ver medicos disponibles.")
+        """Mostrar medicos disponibles recorriendo toda la lista."""
+        print("\n--- Medicos disponibles ---")
+        # Contador para numerar los medicos disponibles que encontramos
+        cont = 0
+        # 'for m in lista' recorre la lista elemento por elemento.
+        # Es mas simple que el for con indice de Java o C#.
+        for m in self._medicos:
+            if m.disponible:
+                # Incrementamos el contador para numerar la lista mostrada
+                cont += 1
+                print("  " + str(cont) + ". " + m.nombre + " (" + m.especialidad + ")")
+        # Si el contador quedo en 0, ningun medico esta disponible
+        if cont == 0:
+            print("  No hay medicos disponibles.")
 
-    # Stub: mostrar los medicos ocupados.
-    # En la Ronda 2 se implementara recorriendo la lista y filtrando por disponible = False.
     def ver_ocupados(self):
-        print("[Pendiente] Ver medicos ocupados.")
+        """[Ronda 2] Mostrar medicos ocupados — stub pendiente."""
+        print("[Pendiente Ronda 2] Ver medicos ocupados.")
 
-    # Stub: liberar un medico ocupado. Recibe el numero del medico a liberar.
     def liberar(self, numero):
-        print("[Pendiente] Liberar medico.")
+        """[Ronda 2] Liberar un medico — stub pendiente."""
+        print("[Pendiente Ronda 2] Liberar medico.")
 
-    # Devuelve 0 como valor temporal; luego contara los medicos disponibles
     def contar_disponibles(self):
-        return 0
+        """Contar cuantos medicos estan disponibles."""
+        cont = 0
+        for m in self._medicos:
+            if m.disponible:
+                cont += 1
+        return cont
 
-    # Devuelve 0 como valor temporal; luego contara los medicos ocupados
     def contar_ocupados(self):
-        return 0
+        """Contar cuantos medicos estan ocupados."""
+        cont = 0
+        for m in self._medicos:
+            # 'not' invierte la condicion: cuenta los que NO estan disponibles
+            if not m.disponible:
+                cont += 1
+        return cont
