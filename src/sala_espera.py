@@ -4,54 +4,80 @@ sala_espera.py - Gestiona la sala de espera usando COLA y PILA.
 Responsable: est2
 Estructuras de datos: deque (cola FIFO) y list (pila LIFO)
 
-deque viene incluida en Python, en el modulo collections. Se usa para la
-cola porque sacar el primer elemento es inmediato; en una lista normal
-habria que correr todos los demas una posicion.
-
-PENDIENTE DE IMPLEMENTAR: est2 debe reemplazar los metodos
-con la logica real en las Rondas 1 y 2.
+Ronda 1: encolar, atender siguiente, ver espera, contar.
+Los metodos ver_historial y deshacer_ultima_atencion quedan como stubs
+y se implementan en la Ronda 2.
 """
 
-# deque es la "cola doblemente terminada" de Python
 from collections import deque
+
+
+class PacienteEspera:
+    """Representa a un paciente dentro de la sala de espera.
+
+    Solo guarda lo minimo necesario para la cola: su ID y su nombre.
+    """
+
+    def __init__(self, id_paciente, nombre):
+        self.id = id_paciente
+        self.nombre = nombre
 
 
 class SalaEspera:
     def __init__(self):
         # COLA (FIFO): el primero en llegar es el primero en ser atendido
         self._cola_espera = deque()
-        # PILA (LIFO): el ultimo atendido es el primero que se ve.
-        # Para la pila basta una lista normal: append() y pop() trabajan
-        # por el final, que es justo lo que hace una pila.
+        # PILA (LIFO): el ultimo atendido es el primero que se ve
         self._historial_atendidos = []
 
-    # Stub: agrega un paciente al final de la cola de espera.
-    # En la Ronda 1 se implementara con append().
     def encolar(self, id_paciente, nombre):
-        print("[Pendiente] Encolar paciente: " + nombre)
+        """Agregar un paciente al FINAL de la cola de espera."""
+        # append() mete el elemento por el final: eso es "encolar"
+        self._cola_espera.append(PacienteEspera(id_paciente, nombre))
 
-    # Stub: saca al primer paciente de la cola y lo pasa al historial.
-    # Devolvera una lista [id, nombre], o None si no habia nadie.
     def atender_siguiente(self):
-        print("[Pendiente] Atender siguiente paciente.")
-        return None
+        """Saca al primer paciente de la cola y lo pasa al historial.
 
-    # Stub: muestra los pacientes que estan esperando.
+        Devuelve una lista [id, nombre], o None si no habia nadie esperando.
+        """
+        # Una coleccion vacia se evalua como False en un if
+        if not self._cola_espera:
+            print("La sala de espera esta vacia. No hay pacientes por atender.")
+            # None avisa a main que no habia a quien atender
+            return None
+        # popleft() saca el PRIMERO de la cola (el que lleva mas tiempo esperando)
+        paciente = self._cola_espera.popleft()
+        # append() sobre la lista lo pone encima de la pila del historial
+        self._historial_atendidos.append(paciente)
+        # str() convierte el numero en texto
+        return [str(paciente.id), paciente.nombre]
+
     def ver_espera(self):
-        print("[Pendiente] Ver sala de espera.")
+        """Mostrar los pacientes que esperan, sin sacarlos de la cola."""
+        print("\n--- Sala de espera (FIFO: primero en llegar, primero en ser atendido) ---")
+        if not self._cola_espera:
+            print("  No hay pacientes en espera.")
+            # return sin valor termina el metodo aqui mismo
+            return
+        # Contador para numerar la posicion en la fila
+        pos = 1
+        # Recorrer la cola con for no la modifica
+        for p in self._cola_espera:
+            print("  " + str(pos) + ". ID: " + str(p.id) + " | " + p.nombre)
+            pos += 1
 
-    # Stub: muestra la pila de pacientes ya atendidos.
     def ver_historial(self):
-        print("[Pendiente] Ver historial de atendidos.")
+        """[Ronda 2] Ver historial de atendidos — stub pendiente."""
+        print("[Pendiente Ronda 2] Ver historial de atendidos.")
 
-    # Stub: devuelve el ultimo paciente atendido a la cola de espera.
     def deshacer_ultima_atencion(self):
-        print("[Pendiente] Deshacer ultima atencion.")
+        """[Ronda 2] Deshacer la ultima atencion — stub pendiente."""
+        print("[Pendiente Ronda 2] Deshacer ultima atencion.")
 
-    # Devuelve 0 como valor temporal; luego devolvera el tamano de la cola
     def contar_espera(self):
-        return 0
+        """Cuantos pacientes hay esperando. len() da el tamano."""
+        return len(self._cola_espera)
 
-    # Devuelve 0 como valor temporal; luego devolvera el tamano de la pila
     def contar_atendidos(self):
-        return 0
+        """Cuantos pacientes fueron atendidos en el turno."""
+        return len(self._historial_atendidos)
